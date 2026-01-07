@@ -41,6 +41,14 @@ const Header = () => {
             >
               Billing
             </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/"
+              onClick={() => setExpanded(false)}
+              className="mx-2"
+            >
+              [user]
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

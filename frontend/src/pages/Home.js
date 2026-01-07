@@ -89,7 +89,7 @@ const Home = () => {
         </Col>
       </Row>
 
-      <Row className="mb-5">
+      {/* <Row className="mb-5">
         {features.map((feature, index) => (
           <Col md={6} lg={3} className="mb-4" key={index}>
             <Card className="h-100 shadow-sm border-0 text-center">
@@ -101,7 +101,7 @@ const Home = () => {
             </Card>
           </Col>
         ))}
-      </Row>
+      </Row> */}
 
       {/* <Row>
         <Col md={12}>
