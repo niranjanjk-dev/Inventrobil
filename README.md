@@ -35,27 +35,22 @@ The system is built to be **scalable**, **user-friendly**, and efficient, minimi
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/yourusername/shop-management-system.git](https://github.com/yourusername/shop-management-system.git)
+    git clone https://github.com/yourusername/inventrobil-web.git
     ```
 
-2.  **Install Dependencies**
-    Navigate to the project folder and install the required packages.
+2.  **Frontend Setup**
+    Navigate to the frontend folder and install dependencies.
     ```bash
-    pip install -r requirements.txt
-    # OR
+    cd frontend
     npm install
-    ```
-
-3.  **Run the Application**
-    Start the local server.
-    ```bash
-    python app.py
-    # OR
     npm start
     ```
 
+3.  **Backend Setup** (Future)
+    The backend will be implemented in Python with Flask.
+
 4.  **Access the Web App**
-    Open your browser and navigate to `http://localhost:5000` (or the specific port configured).
+    Open your browser and navigate to `http://localhost:3000`.
 
 ## 📝 Usage
 * **Login:** Use the Admin credentials to access the dashboard.
