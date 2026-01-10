@@ -1,0 +1,20 @@
+{
+  "owner": {
+    "username": "owner",
+    "password": "43a0d17178a9d26c9e0fe9a74b0b45e38d32f27aed887a008a54bf6e033bf7b9",
+    "role": "Owner",
+    "email": "owner@inventrobil.com"
+  },
+  "manager": {
+    "username": "manager",
+    "password": "866485796cfa8d7c0cf7111640205b83076433547577511d81f8030ae99ecea5",
+    "role": "Manager",
+    "email": "manager@inventrobil.com"
+  },
+  "cashier": {
+    "username": "cashier",
+    "password": "b4c94003c562bb0d89535eca77f07284fe560fd48a7cc1ed99f0a56263d616ba",
+    "role": "Cashier",
+    "email": "cashier@inventrobil.com"
+  }
+}

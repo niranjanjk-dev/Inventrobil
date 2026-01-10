@@ -1,0 +1,84 @@
+body {
+    background-color: #F5F6FA;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-card {
+    background: white;
+    overflow: hidden;
+}
+
+.login-header {
+    background-color: #202528;
+    color: white;
+    display: grid;
+    place-items: center;
+}
+
+.login-header p {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+.login-body {
+    padding: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.form-control {
+    border-radius: 0;
+    font-size: 14px;
+}
+
+.btn-login {
+    background-color: #202528;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.error-alert {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.demo-credentials {
+    border: 1px solid #DEE2E5;
+    border-radius: 8px;
+    padding: 9px 15px;
+    margin-top: 20px;
+}
+
+.demo-credentials p {
+    margin: 5px 0;
+    font-size: 11px;
+}
+
+.demo-credentials code {
+    background: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+}

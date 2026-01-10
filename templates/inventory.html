@@ -4,6 +4,24 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/inventory.css') }}">
+<style>
+    .inventory-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .read-only-notice {
+        background: #e7f3ff;
+        border-left: 4px solid #2196F3;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        color: #0056b3;
+        font-weight: 500;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -15,17 +33,28 @@
     </div>
     {% endif %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Role-based Notice -->
+    {% if not can_edit %}
+    <div class="read-only-notice">
+        📖 You are in <strong>VIEW-ONLY</strong> mode. Contact a Manager or Owner to edit inventory.
+    </div>
+    {% endif %}
+
+    <div class="inventory-header">
         <h2>Inventory Management</h2>
         <div class="d-flex gap-2">
+            {% if can_edit %}
             <button class="btn btn-secondary rounded" onclick="exportInventory()">Export JSON</button>
             <button class="btn btn-secondary rounded" onclick="document.getElementById('importFile').click()">Import JSON</button>
             <button class="btn btn-primary rounded" onclick="toggleAddForm()">Add Product</button>
             <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importInventory(event)">
+            {% else %}
+            <button class="btn btn-secondary rounded" onclick="exportInventory()">Export JSON</button>
+            {% endif %}
         </div>
     </div>
 
-    {% if show_add_form %}
+    {% if show_add_form and can_edit %}
     <form class="card shadow-sm mb-4" onsubmit="handleAddProduct(event)">
         <div class="card-body">
             <h5 class="card-title">Add New Product</h5>
@@ -93,8 +122,12 @@
                         {% endif %}
                     </td>
                     <td>
+                        {% if can_edit %}
                         <button class="btn btn-sm btn-outline-primary me-2" onclick="editProduct({{ product.id }})">Edit</button>
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteProduct({{ product.id }}, '{{ product.sku }}')">Delete</button>
+                        {% else %}
+                        <span class="text-muted" style="font-size: 12px;">View Only</span>
+                        {% endif %}
                     </td>
                 </tr>
                 {% else %}

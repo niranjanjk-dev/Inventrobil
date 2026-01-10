@@ -69,3 +69,4 @@ instance/
 
 archive
 data
+flask_session

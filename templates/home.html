@@ -2,52 +2,228 @@
 
 {% block title %}Home - InventroBil Web{% endblock %}
 
+{% block extra_css %}
+<style>
+    .welcome-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 50px 30px;
+        border-radius: 12px;
+        margin-bottom: 40px;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+    }
+    
+    .welcome-section h1 {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .welcome-section p {
+        font-size: 16px;
+        opacity: 0.95;
+        margin-bottom: 25px;
+    }
+    
+    .role-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    
+    .quick-action-buttons {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .quick-action-btn {
+        background: white;
+        color: #667eea;
+        padding: 12px 24px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .quick-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        color: #667eea;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .stats-card-icon {
+        font-size: 32px;
+        margin-bottom: 15px;
+    }
+    
+    .stats-card-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    
+    .stats-card-label {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+    }
+    
+    .permissions-info {
+        background: #f0f4ff;
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 30px;
+    }
+    
+    .permissions-info h6 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    .permission-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 14px;
+        color: #333;
+    }
+    
+    .permission-item .check {
+        width: 20px;
+        height: 20px;
+        background: #667eea;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    .permission-item.disabled .check {
+        background: #ccc;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div>
-    <div class="row mb-5 mt-5">
-        <div class="col-md-12">
-            <div class="text-center">
-                <h1 class="display-4 fw-bold mb-3">Welcome to InventroBil Web</h1>
-                <a href="/inventory" class="btn btn-primary btn-lg me-3">Manage Inventory</a>
-                <a href="/billing" class="btn btn-success btn-lg">Start Billing</a>
-            </div>
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="role-badge">👤 {{ user.role }}</div>
+        <h1>Welcome back, {{ user.username }}!</h1>
+        <p>Manage your inventory and billing operations seamlessly</p>
+        
+        <div class="quick-action-buttons">
+            {% if permissions.view_inventory %}
+            <a href="/inventory" class="quick-action-btn">
+                📦 View Inventory
+            </a>
+            {% endif %}
+            
+            {% if permissions.manage_billing %}
+            <a href="/billing" class="quick-action-btn">
+                💳 Create Bill
+            </a>
+            {% endif %}
+            
+            {% if permissions.access_settings %}
+            <a href="/settings" class="quick-action-btn">
+                ⚙️ Settings
+            </a>
+            {% endif %}
         </div>
     </div>
 
     <!-- Stats Section -->
     <div class="row mb-5">
         <div class="col-md-3 mb-3">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-primary fw-bold">{{ total_products }}</h3>
-                    <p class="text-muted mb-0">Total Products</p>
-                </div>
+            <div class="stats-card">
+                <div class="stats-card-icon">📦</div>
+                <div class="stats-card-value">{{ total_products }}</div>
+                <div class="stats-card-label">Total Products</div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-warning fw-bold">{{ low_stock_count }}</h3>
-                    <p class="text-muted mb-0">Low Stock Items</p>
-                </div>
+            <div class="stats-card">
+                <div class="stats-card-icon">⚠️</div>
+                <div class="stats-card-value">{{ low_stock_count }}</div>
+                <div class="stats-card-label">Low Stock Items</div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-success fw-bold">{{ total_transactions }}</h3>
-                    <p class="text-muted mb-0">Transactions Today</p>
-                </div>
+            <div class="stats-card">
+                <div class="stats-card-icon">📊</div>
+                <div class="stats-card-value">{{ total_transactions }}</div>
+                <div class="stats-card-label">Transactions Today</div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <h3 class="text-info fw-bold">${{ "%.2f"|format(total_revenue) }}</h3>
-                    <p class="text-muted mb-0">Total Revenue</p>
-                </div>
+            <div class="stats-card">
+                <div class="stats-card-icon">💰</div>
+                <div class="stats-card-value">${{ "%.2f"|format(total_revenue) }}</div>
+                <div class="stats-card-label">Total Revenue</div>
             </div>
         </div>
     </div>
+    
+    <!-- Permissions Info -->
+    <div class="permissions-info">
+        <h6>📋 Your Permissions</h6>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="permission-item {% if not permissions.view_inventory %}disabled{% endif %}">
+                    <div class="check">{% if permissions.view_inventory %}✓{% else %}✗{% endif %}</div>
+                    <span>View Inventory</span>
+                </div>
+                <div class="permission-item {% if not permissions.edit_inventory %}disabled{% endif %}">
+                    <div class="check">{% if permissions.edit_inventory %}✓{% else %}✗{% endif %}</div>
+                    <span>Edit Inventory</span>
+                </div>
+                <div class="permission-item {% if not permissions.manage_billing %}disabled{% endif %}">
+                    <div class="check">{% if permissions.manage_billing %}✓{% else %}✗{% endif %}</div>
+                    <span>Create Billing</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="permission-item {% if not permissions.view_reports %}disabled{% endif %}">
+                    <div class="check">{% if permissions.view_reports %}✓{% else %}✗{% endif %}</div>
+                    <span>View Reports</span>
+                </div>
+                <div class="permission-item {% if not permissions.manage_users %}disabled{% endif %}">
+                    <div class="check">{% if permissions.manage_users %}✓{% else %}✗{% endif %}</div>
+                    <span>Manage Users</span>
+                </div>
+                <div class="permission-item {% if not permissions.access_settings %}disabled{% endif %}">
+                    <div class="check">{% if permissions.access_settings %}✓{% else %}✗{% endif %}</div>
+                    <span>Access Settings</span>
 </div>
 {% endblock %}

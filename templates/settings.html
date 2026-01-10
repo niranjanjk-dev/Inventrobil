@@ -1,0 +1,585 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - InventroBil{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .settings-nav {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .settings-nav .nav-item {
+        border-right: 1px solid #e0e0e0;
+    }
+    
+    .settings-nav .nav-item:last-child {
+        border-right: none;
+    }
+    
+    .settings-nav .nav-link {
+        padding: 15px 20px;
+        color: #666;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .settings-nav .nav-link.active {
+        background-color: #f5f5f5;
+        border-bottom-color: #667eea;
+        color: #667eea;
+        font-weight: 600;
+    }
+    
+    .settings-nav .nav-link:hover {
+        background-color: #f9f9f9;
+    }
+    
+    .settings-section {
+        display: none;
+    }
+    
+    .settings-section.active {
+        display: block;
+    }
+    
+    .settings-panel {
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .section-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .user-card {
+        background: #f9f9f9;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .user-info {
+        flex: 1;
+    }
+    
+    .user-username {
+        font-weight: 600;
+        color: #333;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+    
+    .user-role {
+        font-size: 13px;
+        color: #666;
+        display: inline-block;
+        padding: 4px 8px;
+        background: white;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+    
+    .user-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .user-actions button {
+        padding: 8px 15px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-reset-password {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .btn-reset-password:hover {
+        background: #ffe69c;
+    }
+    
+    .btn-delete-user {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .btn-delete-user:hover {
+        background: #f5c6cb;
+    }
+    
+    .form-section {
+        background: #f9f9f9;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .form-section h5 {
+        color: #333;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+    
+    .form-control, .form-select {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .btn-primary-custom {
+        background: #667eea;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary-custom:hover {
+        background: #5568d3;
+    }
+    
+    .alert-success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+        padding: 12px 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        display: none;
+    }
+    
+    .alert-error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        padding: 12px 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 class="fw-bold">Settings</h2>
+            <p class="text-muted">Manage your account and system users</p>
+        </div>
+    </div>
+    
+    <!-- Navigation Tabs -->
+    <div class="settings-nav">
+        <nav class="nav nav-fill" role="tablist">
+            <button class="nav-link active" data-tab="change-password">
+                <i class="bi bi-key"></i> Change Password
+            </button>
+            <button class="nav-link" data-tab="manage-users">
+                <i class="bi bi-people"></i> Manage Users
+            </button>
+        </nav>
+    </div>
+    
+    <!-- Change Password Section -->
+    <div id="change-password" class="settings-section active">
+        <div class="settings-panel">
+            <h3 class="section-title">Change Your Password</h3>
+            
+            <div id="password-success" class="alert-success"></div>
+            <div id="password-error" class="alert-error"></div>
+            
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label for="oldPassword">Current Password</label>
+                    <input type="password" 
+                           id="oldPassword" 
+                           class="form-control" 
+                           placeholder="Enter your current password" 
+                           required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" 
+                           id="newPassword" 
+                           class="form-control" 
+                           placeholder="Enter new password (min. 6 characters)" 
+                           required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" 
+                           id="confirmPassword" 
+                           class="form-control" 
+                           placeholder="Confirm new password" 
+                           required>
+                </div>
+                
+                <button type="submit" class="btn-primary-custom">Update Password</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Manage Users Section (Owner Only) -->
+    {% if permissions.manage_users %}
+    <div id="manage-users" class="settings-section">
+        <div class="settings-panel">
+            <h3 class="section-title">Manage Users</h3>
+            
+            <div id="users-success" class="alert-success"></div>
+            <div id="users-error" class="alert-error"></div>
+            
+            <!-- Create New User -->
+            <div class="form-section">
+                <h5>Create New User</h5>
+                <form id="createUserForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="newUsername">Username</label>
+                                <input type="text" 
+                                       id="newUsername" 
+                                       class="form-control" 
+                                       placeholder="Enter username" 
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="newRole">Role</label>
+                                <select id="newRole" class="form-select" required>
+                                    <option value="">Select a role</option>
+                                    <option value="Owner">Owner</option>
+                                    <option value="Manager">Manager</option>
+                                    <option value="Cashier">Cashier</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="newEmail">Email</label>
+                                <input type="email" 
+                                       id="newEmail" 
+                                       class="form-control" 
+                                       placeholder="Enter email address" 
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="newUserPassword">Password</label>
+                                <input type="password" 
+                                       id="newUserPassword" 
+                                       class="form-control" 
+                                       placeholder="Enter password (min. 6 characters)" 
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary-custom">Create User</button>
+                </form>
+            </div>
+            
+            <!-- Users List -->
+            <div class="form-section">
+                <h5>Current Users</h5>
+                <div id="usersList">
+                    {% for u in users %}
+                    <div class="user-card">
+                        <div class="user-info">
+                            <div class="user-username">{{ u.username }}</div>
+                            <span class="user-role">{{ u.role }}</span>
+                            <div style="font-size: 12px; color: #999; margin-top: 5px;">{{ u.email }}</div>
+                        </div>
+                        <div class="user-actions">
+                            {% if u.username != user.username %}
+                            <button type="button" 
+                                    class="btn-reset-password" 
+                                    onclick="openResetPasswordModal('{{ u.username }}')">
+                                Reset Password
+                            </button>
+                            <button type="button" 
+                                    class="btn-delete-user" 
+                                    onclick="deleteUser('{{ u.username }}')">
+                                Delete
+                            </button>
+                            {% else %}
+                            <span style="color: #999; font-size: 13px;">Current User</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Reset Password Modal -->
+<div id="resetPasswordModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 8px; min-width: 400px;">
+        <h5 style="margin-bottom: 20px;">Reset Password for <span id="resetUsername"></span></h5>
+        <div class="form-group">
+            <label for="resetPasswordInput">New Password</label>
+            <input type="password" 
+                   id="resetPasswordInput" 
+                   class="form-control" 
+                   placeholder="Enter new password" 
+                   required>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button type="button" 
+                    class="btn btn-secondary" 
+                    onclick="closeResetPasswordModal()">
+                Cancel
+            </button>
+            <button type="button" 
+                    class="btn btn-warning" 
+                    onclick="confirmResetPassword()">
+                Reset Password
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Tab Navigation
+document.querySelectorAll('.settings-nav .nav-link').forEach(button => {
+    button.addEventListener('click', function() {
+        const tab = this.getAttribute('data-tab');
+        
+        // Hide all sections
+        document.querySelectorAll('.settings-section').forEach(s => {
+            s.classList.remove('active');
+        });
+        
+        // Remove active from all buttons
+        document.querySelectorAll('.settings-nav .nav-link').forEach(b => {
+            b.classList.remove('active');
+        });
+        
+        // Show selected section and mark button as active
+        document.getElementById(tab).classList.add('active');
+        this.classList.add('active');
+    });
+});
+
+// Change Password Form
+document.getElementById('changePasswordForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const oldPassword = document.getElementById('oldPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (newPassword !== confirmPassword) {
+        showAlert('password-error', 'Passwords do not match');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/user/change-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                old_password: oldPassword,
+                new_password: newPassword
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showAlert('password-success', 'Password changed successfully!');
+            document.getElementById('changePasswordForm').reset();
+            setTimeout(() => {
+                document.getElementById('password-success').style.display = 'none';
+            }, 3000);
+        } else {
+            showAlert('password-error', data.error || 'Failed to change password');
+        }
+    } catch (error) {
+        showAlert('password-error', 'An error occurred');
+    }
+});
+
+// Create User Form
+document.getElementById('createUserForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const username = document.getElementById('newUsername').value;
+    const role = document.getElementById('newRole').value;
+    const email = document.getElementById('newEmail').value;
+    const password = document.getElementById('newUserPassword').value;
+    
+    try {
+        const response = await fetch('/api/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username,
+                password,
+                role,
+                email
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showAlert('users-success', 'User created successfully!');
+            document.getElementById('createUserForm').reset();
+            location.reload();
+        } else {
+            showAlert('users-error', data.error || 'Failed to create user');
+        }
+    } catch (error) {
+        showAlert('users-error', 'An error occurred');
+    }
+});
+
+// Reset Password Modal
+let resetingUsername = '';
+
+function openResetPasswordModal(username) {
+    resetingUsername = username;
+    document.getElementById('resetUsername').textContent = username;
+    document.getElementById('resetPasswordModal').style.display = 'block';
+    document.getElementById('resetPasswordInput').value = '';
+}
+
+function closeResetPasswordModal() {
+    document.getElementById('resetPasswordModal').style.display = 'none';
+    resetingUsername = '';
+}
+
+async function confirmResetPassword() {
+    const newPassword = document.getElementById('resetPasswordInput').value;
+    
+    if (!newPassword || newPassword.length < 6) {
+        alert('Password must be at least 6 characters');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/user/${resetingUsername}/reset-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                new_password: newPassword
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showAlert('users-success', data.message);
+            closeResetPasswordModal();
+            setTimeout(() => {
+                document.getElementById('users-success').style.display = 'none';
+            }, 3000);
+        } else {
+            alert(data.error || 'Failed to reset password');
+        }
+    } catch (error) {
+        alert('An error occurred');
+    }
+}
+
+// Delete User
+async function deleteUser(username) {
+    if (!confirm(`Are you sure you want to delete user "${username}"?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/user/${username}`, {
+            method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showAlert('users-success', data.message);
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            alert(data.error || 'Failed to delete user');
+        }
+    } catch (error) {
+        alert('An error occurred');
+    }
+}
+
+// Show Alert
+function showAlert(alertId, message) {
+    const alert = document.getElementById(alertId);
+    alert.textContent = message;
+    alert.style.display = 'block';
+}
+</script>
+{% endblock %}
