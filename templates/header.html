@@ -19,25 +19,25 @@
                 
                 {% if user %}
                 <div class="nav-item dropdown mx-2">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        👤 {{ user.username }}
+                    <a class="nav-link" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        [user]
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li>
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                                🔐 Change Password
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
                             <span class="dropdown-item-text" style="font-size: 12px; color: #999;">
-                                Role: <strong>{{ user.role }}</strong>
+                                {{user.username}}: {{user.role }}
                             </span>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                Change Password
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
                             <a class="dropdown-item text-danger" href="/logout">
-                                🚪 Logout
+                                Logout
                             </a>
                         </li>
                     </ul>

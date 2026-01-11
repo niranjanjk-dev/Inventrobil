@@ -350,7 +350,8 @@ def inventory():
         user=session['user'],
         permissions=permissions,
         products=products,
-        can_edit=can_edit
+        can_edit=can_edit,
+        show_add_form=False
     )
 
 @app.route('/billing')
