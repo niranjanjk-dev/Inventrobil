@@ -5,8 +5,7 @@
 {% block content %}
 <div>
     <!-- Welcome Section -->
-    <div class="alert text-center">
-        <!-- <div class="role-badge">{{ user.role }}</div> -->
+    <div class="alert alert-light">
         <h1 class="fw-bold">Welcome back, {{ user.username }}!</h1>
         
         {% if permissions.view_inventory %}

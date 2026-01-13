@@ -3,7 +3,7 @@
 {% block title %}Inventory - InventroBil{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
+<div>
     {% if show_alert %}
     <div class="alert alert-{{ alert_variant }} alert-dismissible fade show position-fixed bottom-0 end-0 m-3" role="alert" style="z-index: 1050;">
         {{ alert_message }}
@@ -17,13 +17,13 @@
     </div>
     {% endif %} -->
 
-    <div class="inventory-header  d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h2 fw-bold">Inventory Management</h1>
+    <div class="alert alert-light">
+        <h1 class=" fw-bold">Inventory Management</h1>
         <div class="d-flex gap-2">
             {% if can_edit %}
-            <button class="btn btn-secondary rounded" onclick="exportInventory()">Export JSON</button>
-            <button class="btn btn-secondary rounded" onclick="document.getElementById('importFile').click()">Import JSON</button>
             <button class="btn btn-primary rounded" onclick="toggleAddForm()">Add Product</button>
+            <button class="btn btn-secondary rounded" onclick="exportInventory()">Export</button>
+            <button class="btn btn-secondary rounded" onclick="document.getElementById('importFile').click()">Import</button>
             <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importInventory(event)">
             {% else %}
             <button class="btn btn-secondary rounded" onclick="exportInventory()">Export JSON</button>
@@ -31,36 +31,7 @@
         </div>
     </div>
 
-    {% if show_add_form and can_edit %}
-    <form class="card shadow-sm mb-4" onsubmit="handleAddProduct(event)">
-        <div class="card-body">
-            <h5 class="card-title">Add New Product</h5>
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Product Name" id="newProductName" required>
-                </div>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="SKU" id="newProductSku" required>
-                </div>
-                <div class="col-md-6">
-                    <select class="form-select" id="newProductCategory">
-                        <option>Plumbing</option>
-                        <option>Electronics</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <input type="number" class="form-control" placeholder="Stock" id="newProductStock" required>
-                </div>
-                <div class="col-md-6">
-                    <input type="number" class="form-control" placeholder="Price ($)" id="newProductPrice" step="0.01" required>
-                </div>
-                <div class="col-md-6">
-                    <button class="btn btn-primary w-100" type="submit">Save Product</button>
-                </div>
-            </div>
-        </div>
-    </form>
-    {% endif %}
+
 
     <div class="input-group mb-4">
         <span class="input-group-text">🔍</span>
@@ -69,7 +40,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped mb-0">
             <thead class="table-dark">
                 <tr>
                     <th>Product Name</th>
@@ -84,12 +55,12 @@
             <tbody id="inventoryTableBody">
                 {% for product in products %}
                 <tr data-product-id="{{ product.id }}">
-                    <td class="fw-medium">{{ product.name }}</td>
-                    <td>{{ product.category }}</td>
-                    <td><code>{{ product.sku }}</code></td>
-                    <td>{{ product.stock }}</td>
-                    <td class="fw-medium">${{ "%.2f"|format(product.price) }}</td>
-                    <td>
+                    <td class="fw-medium text-nowrap">{{ product.name }}</td>
+                    <td class="text-nowrap">{{ product.category }}</td>
+                    <td class="text-nowrap"><code>{{ product.sku }}</code></td>
+                    <td class="text-nowrap">{{ product.stock }}</td>
+                    <td class="fw-medium text-nowrap">${{ "%.2f"|format(product.price) }}</td>
+                    <td class="text-nowrap">
                         {% if product.stock < 10 %}
                         <span class="badge bg-danger">Low</span>
                         {% elif product.stock < 20 %}
@@ -98,7 +69,7 @@
                         <span class="badge bg-success">In Stock</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="text-nowrap">
                         {% if can_edit %}
                         <button class="btn btn-sm btn-outline-primary me-2" onclick="editProduct({{ product.id }})">Edit</button>
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteProduct({{ product.id }}, '{{ product.sku }}')">Delete</button>
@@ -117,38 +88,43 @@
     </div>
 </div>
 
-<!-- Edit Modal -->
-<div class="modal" id="editModal" tabindex="-1" style="display: none;">
+<!-- Product Modal (Add/Edit) -->
+<div class="modal" id="productModal" tabindex="-1" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Product</h5>
-                <button type="button" class="btn-close" onclick="closeEditModal()"></button>
+                <h5 class="modal-title" id="productModalTitle">Add New Product</h5>
+                <button type="button" class="btn-close" onclick="closeProductModal()"></button>
             </div>
-            <form onsubmit="handleUpdateProduct(event)">
+            <form onsubmit="handleProductSubmit(event)">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="editProductName">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="productName" placeholder="Product Name" required>
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="editProductSku">
+                        <label class="form-label">SKU</label>
+                        <input type="text" class="form-control" id="productSku" placeholder="SKU" required>
                     </div>
                     <div class="mb-3">
-                        <select class="form-select" id="editProductCategory">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" id="productCategory" required>
                             <option>Plumbing</option>
                             <option>Electronics</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <input type="number" class="form-control" id="editProductStock">
+                        <label class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="productStock" placeholder="Stock" required>
                     </div>
                     <div class="mb-3">
-                        <input type="number" class="form-control" id="editProductPrice" step="0.01">
+                        <label class="form-label">Price ($)</label>
+                        <input type="number" class="form-control" id="productPrice" placeholder="Price" step="0.01" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
-                    <button class="btn btn-primary" type="submit">Update Product</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+                    <button class="btn btn-primary" type="submit" id="productSubmitBtn">Save Product</button>
                 </div>
             </form>
         </div>
@@ -160,61 +136,68 @@
         display: block;
         background-color: rgba(0, 0, 0, 0.5);
     }
+
+    .modal {
+        position: fixed;
+        z-index: 1050;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .modal-dialog {
+        position: relative;
+        width: 90%;
+        max-width: 500px;
+        margin: auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-dialog-centered {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
 </style>
 
-<script>
-    // Modal background when shown
-    document.getElementById('editModal').addEventListener('show.bs.modal', function() {
-        this.style.display = 'block';
-    });
-</script>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
     let allProducts = {{ products|tojson }};
     let editingProductId = null;
+    let isEditMode = false;
 
     function toggleAddForm() {
-        const form = document.querySelector('form.card');
-        if (form) {
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        } else {
-            // Form doesn't exist in DOM, create it dynamically
-            const header = document.querySelector('.inventory-header');
-            const newForm = document.createElement('form');
-            newForm.className = 'card shadow-sm mb-4';
-            newForm.onsubmit = handleAddProduct;
-            newForm.innerHTML = `
-                <div class="card-body">
-                    <h5 class="card-title">Add New Product</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="Product Name" id="newProductName" required>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="SKU" id="newProductSku" required>
-                        </div>
-                        <div class="col-md-6">
-                            <select class="form-select" id="newProductCategory">
-                                <option>Plumbing</option>
-                                <option>Electronics</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="number" class="form-control" placeholder="Stock" id="newProductStock" required>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="number" class="form-control" placeholder="Price ($)" id="newProductPrice" step="0.01" required>
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-primary w-100" type="submit">Save Product</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            header.parentNode.insertBefore(newForm, header.nextElementSibling);
-        }
+        isEditMode = false;
+        editingProductId = null;
+        document.getElementById('productModalTitle').textContent = 'Add New Product';
+        document.getElementById('productSubmitBtn').textContent = 'Save Product';
+        // Clear the form
+        document.getElementById('productName').value = '';
+        document.getElementById('productSku').value = '';
+        document.getElementById('productCategory').value = 'Plumbing';
+        document.getElementById('productStock').value = '';
+        document.getElementById('productPrice').value = '';
+        openProductModal();
+    }
+
+    function openProductModal() {
+        document.getElementById('productModal').style.display = 'block';
+        document.getElementById('productModal').classList.add('show');
+    }
+
+    function closeProductModal() {
+        document.getElementById('productModal').style.display = 'none';
+        document.getElementById('productModal').classList.remove('show');
+        isEditMode = false;
+        editingProductId = null;
     }
 
     function filterInventory() {
@@ -234,23 +217,19 @@
     }
 
     function editProduct(id) {
+        isEditMode = true;
         editingProductId = id;
         const product = allProducts.find(p => p.id === id);
         if (product) {
-            document.getElementById('editProductName').value = product.name;
-            document.getElementById('editProductSku').value = product.sku;
-            document.getElementById('editProductCategory').value = product.category;
-            document.getElementById('editProductStock').value = product.stock;
-            document.getElementById('editProductPrice').value = product.price;
-            document.getElementById('editModal').style.display = 'block';
-            document.getElementById('editModal').classList.add('show');
+            document.getElementById('productModalTitle').textContent = 'Edit Product';
+            document.getElementById('productSubmitBtn').textContent = 'Update Product';
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productSku').value = product.sku;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productStock').value = product.stock;
+            document.getElementById('productPrice').value = product.price;
+            openProductModal();
         }
-    }
-
-    function closeEditModal() {
-        document.getElementById('editModal').style.display = 'none';
-        document.getElementById('editModal').classList.remove('show');
-        editingProductId = null;
     }
 
     function deleteProduct(id, sku) {
@@ -272,66 +251,39 @@
         }
     }
 
-    function handleAddProduct(e) {
+    function handleProductSubmit(e) {
         e.preventDefault();
         const product = {
-            name: document.getElementById('newProductName').value,
-            sku: document.getElementById('newProductSku').value,
-            category: document.getElementById('newProductCategory').value,
-            stock: parseInt(document.getElementById('newProductStock').value),
-            price: parseFloat(document.getElementById('newProductPrice').value)
+            name: document.getElementById('productName').value,
+            sku: document.getElementById('productSku').value,
+            category: document.getElementById('productCategory').value,
+            stock: parseInt(document.getElementById('productStock').value),
+            price: parseFloat(document.getElementById('productPrice').value)
         };
         
-        fetch('/api/product', {
-            method: 'POST',
+        const method = isEditMode ? 'PUT' : 'POST';
+        const url = isEditMode ? `/api/product/${editingProductId}` : '/api/product';
+        const errorMsg = isEditMode ? 'Error updating product' : 'Error adding product';
+        
+        fetch(url, {
+            method: method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(product)
         }).then(response => {
             if (!response.ok) {
                 return response.json().then(err => {
-                    throw new Error(err.error || 'Error adding product');
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            location.reload();
-        })
-        .catch(err => {
-            alert('Error adding product: ' + err.message);
-            console.error('Add product error:', err);
-        });
-    }
-
-    function handleUpdateProduct(e) {
-        e.preventDefault();
-        const product = {
-            name: document.getElementById('editProductName').value,
-            sku: document.getElementById('editProductSku').value,
-            category: document.getElementById('editProductCategory').value,
-            stock: parseInt(document.getElementById('editProductStock').value),
-            price: parseFloat(document.getElementById('editProductPrice').value)
-        };
-        
-        fetch(`/api/product/${editingProductId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(product)
-        }).then(response => {
-            if (!response.ok) {
-                return response.json().then(err => {
-                    throw new Error(err.error || 'Error updating product');
+                    throw new Error(err.error || errorMsg);
                 });
             }
             return response.json();
         })
         .then(() => {
-            closeEditModal();
+            closeProductModal();
             location.reload();
         })
         .catch(err => {
-            alert('Error updating product: ' + err.message);
-            console.error('Update product error:', err);
+            alert(err.message);
+            console.error('Product operation error:', err);
         });
     }
 
@@ -369,5 +321,13 @@
         };
         reader.readAsText(file);
     }
+
+    // Close modal when clicking outside of it
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('productModal');
+        if (event.target === modal) {
+            closeProductModal();
+        }
+    });
 </script>
 {% endblock %}
