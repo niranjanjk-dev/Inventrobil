@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify, session, send_file
 from extensions import db
 from models import Product, BillingRecord, BillingItem
-from utils import cashier_required, get_user_permissions
+from utils import cashier_required, get_user_permissions, generate_invoice_pdf
 from datetime import datetime
 
 billing_bp = Blueprint('billing', __name__)
@@ -112,3 +112,22 @@ def get_billing_history():
     """Get billing history"""
     history = BillingRecord.query.order_by(BillingRecord.timestamp.desc()).all()
     return jsonify([h.to_dict() for h in history])
+
+@billing_bp.route('/api/billing/invoice/<int:record_id>', methods=['GET'])
+@cashier_required
+def download_invoice(record_id):
+    """Generate and download invoice PDF"""
+    # record_id here is actually the timestamp_id passed from frontend
+    record = BillingRecord.query.filter_by(timestamp_id=record_id).first_or_404()
+    # Items are linked by the DB primary key, not timestamp_id
+    items = BillingItem.query.filter_by(billing_id=record.id).all()
+    
+    pdf_buffer = generate_invoice_pdf(record, items)
+    
+    return send_file(
+        pdf_buffer,
+        as_attachment=True,
+        download_name=f'invoice_{record_id}.pdf',
+        mimetype='application/pdf'
+    )
+
